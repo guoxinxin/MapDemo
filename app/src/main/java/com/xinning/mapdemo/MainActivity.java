@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
                 hexString.append(":");
             }
             String result = hexString.toString();
-            Log.e("1",result.substring(0, result.length()-1));
             return result.substring(0, result.length()-1);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -147,9 +146,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         map.onDestroy();
+        mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
